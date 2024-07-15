@@ -20,9 +20,6 @@ def read_file(ticker):
     df['MACD'] = df['12 EMA'] - df['26 EMA']
     df['Signal'] = calculate_ema_gpt(df['MACD'], 9)
     df['Histogram'] = df['MACD'] - df['Signal']
-    # numeric_df = df.select_dtypes(include=['number'])
-    # numeric_df['open-close']  = numeric_df['Open'] - numeric_df['Close'] 
-    # numeric_df['low-high']  = numeric_df['Low'] - numeric_df['High'] 
     return df
 
 def get_info():
@@ -52,7 +49,7 @@ if __name__ == '__main__':
     # ticker = input('Enter Ticker: ')
     ticker = 'SPY'
     df = read_file(ticker)
-    print('Dataframe: ', df.tail(15))
-    signals = macd_histogram_trend_reversal_signal(df['Histogram'].tail(1500))
-    print('Signals: ', signals[-15:])
+    # print('Dataframe: ', df.tail(50))
+    signals = macd_histogram_trend_reversal_signal(df['Histogram'])
+    # print('Signals: ', signals[:15])
     backtest(df, signals)
