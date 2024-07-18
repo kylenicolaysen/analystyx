@@ -6,36 +6,36 @@ def buy(balance, price, shares):
     print('BUY ', new_shares, ' @ ', price)
     return (new_shares, remaining_bal)
 
-def sell(balance, price, shares):
-    print('sell price ', price)
+def sell(balance, price, shares, hide = False):
     if shares < 1:
         return balance
     amt = price * shares
-    print('SELL ', shares, ' @ ', price)
+    if hide == False:
+        print('SELL ', shares, ' @ ', price)
     return balance + amt
 
-def backtest(df, signals):
+def backtest(price_data, signals, leverage = 1):
     balance = 100000
     shares = 0
-    df = df.head(5000)
+    price_data = price_data.head(5000)
     signals = signals[:5000]
-    for index, item in enumerate(signals):
-        if item[1] == True and item[0] == 'increasing':
-            shares, balance = buy(balance, df.Close[index], shares)
+    for index, signal in enumerate(signals):
+        if signal[0] == 'buy':
+            shares, balance = buy(balance, price_data.Close[index], shares)
             # print(index, shares, balance)
-        elif item[1] == True and item[0] == 'decreasing':
-            balance = sell(balance, df.Close[index], shares)
+        elif signal[0] == 'sell':
+            balance = sell(balance, price_data.Close[index], shares)
             shares = 0
             # print(index, shares, balance)
- 
+    print('\n****************')
     print('Balance: ', balance)
     print('Shares: ', shares)
     if shares != 0:
-        balance = sell(balance, df.Close.tail(1), shares)
-    print('Final Balance: ', balance)
-
-    print('\n*\n*\n*\n*')
-    b = buy(100000, df.Close[0], 0)
-    s = sell(b[1], df.tail(1).Close, b[0])
-    print('Buy and Hold: ', s)
+        balance = sell(balance, price_data.iloc[-1]['Close'], shares, True)
+    print('Strategy Balance: ', balance)
+    print('\n****************')
+    b = buy(100000, price_data.Close[0], 0)
+    s = sell(b[1], price_data.iloc[-1]['Close'], b[0])
+    print('Hold Balance: ', s)
+    print('****************\n')
     return

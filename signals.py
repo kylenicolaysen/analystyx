@@ -12,9 +12,12 @@ def macd_histogram_trend_reversal_signal(data):
         else:
             new_trend = 'no trend'
         
-        if current_trend == new_trend and trends[i-1][0] == new_trend and trends[i-2][0] != new_trend:
-            trends.append((new_trend, True, data[i]))
+        if current_trend == new_trend and trends[i-1][2] == new_trend and trends[i-2][2] != new_trend:
+            if new_trend == 'increasing':
+                trends.append(('buy', data[i], new_trend)) 
+            elif new_trend == 'decreasing':
+                trends.append(('sell', data[i], new_trend))        
         else:
-            trends.append((new_trend, False, data[i]))
+            trends.append((None, data[i], new_trend))
         current_trend = new_trend
     return trends
