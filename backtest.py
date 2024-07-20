@@ -14,7 +14,7 @@ def sell(balance, price, shares, hide = False):
         print('SELL ', shares, ' @ ', price)
     return balance + amt
 
-def backtest(price_data, signals, leverage = 1):
+def backtest(price_data, signals):
     balance = 100000
     shares = 0
     price_data = price_data.head(5000)
@@ -27,15 +27,16 @@ def backtest(price_data, signals, leverage = 1):
             balance = sell(balance, price_data.Close[index], shares)
             shares = 0
             # print(index, shares, balance)
-    print('\n****************')
+    print('\n********************************')
     print('Balance: ', balance)
     print('Shares: ', shares)
     if shares != 0:
         balance = sell(balance, price_data.iloc[-1]['Close'], shares, True)
     print('Strategy Balance: ', balance)
-    print('\n****************')
+    print('********************************\n')
+    print('********************************')
     b = buy(100000, price_data.Close[0], 0)
     s = sell(b[1], price_data.iloc[-1]['Close'], b[0])
     print('Hold Balance: ', s)
-    print('****************\n')
+    print('********************************\n')
     return
