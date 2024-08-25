@@ -15,11 +15,12 @@ def read_file(ticker):
     df['Year'] = splitted[0].astype('int')
     df['Month'] = splitted[1].astype('int')
     df['Day'] = splitted[2].astype('int')
-    df['26 EMA'] = calculate_ema_gpt(df['Close'], 26)
-    df['12 EMA'] = calculate_ema_gpt(df['Close'], 12)
+    df['26 EMA'] = calculate_ema(df['Close'], 26)
+    df['12 EMA'] = calculate_ema(df['Close'], 12)
     df['MACD'] = df['12 EMA'] - df['26 EMA']
-    df['Signal'] = calculate_ema_gpt(df['MACD'], 9)
-    df['Histogram'] = df['MACD'] - df['Signal']
+    df['MACD Signal'] = calculate_ema(df['MACD'], 9)
+    df['Histogram'] = df['MACD'] - df['MACD Signal']
+    df['200 SMA'] = calculate_sma(df['Close'], 200)
     return df
 
 def get_info():
@@ -49,7 +50,9 @@ if __name__ == '__main__':
     # ticker = input('Enter Ticker: ')
     ticker = 'SPY'
     df = read_file(ticker)
-    # print('Dataframe: ', df.tail(50))
-    signals = macd_histogram_trend_reversal_signal(df['Histogram'])
-    # print('Signals: ', signals[:15])
+    # signals = macd_histogram_trend_reversal_signal(df['Histogram'])
+    signals = two_hundred_sma_signal(df['Close'], df['200 SMA'])
+    # print(signals)
     backtest(df, signals)
+    # x = calculate_sma([2,4,2,4,2,4,2,4,5,6,7,8,9,10], 3)
+    # print(x)
